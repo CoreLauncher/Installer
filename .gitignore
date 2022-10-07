@@ -4,3 +4,5 @@ src/Main/resources/CoreLauncher-Bootstrap.twr
 .TypeWriter/Build/CoreLauncher-Installer.exe
 .TypeWriter/Build/CoreLauncher-Installer.twr
 BuildBootstrap.ps1
+.TypeWriter/Build/CoreLauncher-Installer
+CoreLauncher-Installer.tar
