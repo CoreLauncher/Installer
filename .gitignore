@@ -6,3 +6,4 @@ src/Main/resources/CoreLauncher-Bootstrap.twr
 BuildBootstrap.ps1
 .TypeWriter/Build/CoreLauncher-Installer
 CoreLauncher-Installer.tar
+BuildBootstrap.sh
