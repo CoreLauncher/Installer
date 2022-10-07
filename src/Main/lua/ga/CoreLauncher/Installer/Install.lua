@@ -1,14 +1,19 @@
 local Author = "CoreLauncher"
 local Package = Author
 
+if TypeWriter.Os ~= "win32" and TypeWriter.Os ~= "darwin" then
+    TypeWriter.Logger.Error("CoreLauncher is not supported for your os at this time!")
+end
+
 local FS = require("fs")
 local AppData = TypeWriter.ApplicationData .. "/CoreLauncher/"
 FS.mkdirSync(AppData)
 local TempDir = AppData .. "/Temp/"
+require("coro-fs").rmrf(TempDir)
 FS.mkdirSync(TempDir)
-
+local FavIcon = AppData .. "/favicon.ico"
 FS.writeFileSync(
-    AppData .. "/favicon.ico",
+    FavIcon,
     TypeWriter.LoadedPackages["CoreLauncher-Installer"].Resources["/favicon.ico"]
 )
 
@@ -82,18 +87,56 @@ local Finish = {
         )
     end,
     [false] = function () -- Not windows !?!?
-        
+        local FileIcon = TempDir .. "/FileIcon"
+        FS.writeFileSync(
+            FileIcon,
+            TypeWriter.LoadedPackages["CoreLauncher-Installer"].Resources["/fileicon"]
+        )
+        os.execute("chmod +x " .. FileIcon)
+        local function CreateShortcut(From, Command, Icon)
+            FS.writeFileSync(
+                From,
+                Command
+            )
+            require("coro-spawn")(
+                FileIcon,
+                {
+                    args = {
+                        "set", From, Icon
+                    },
+                    stdio = {
+                        process.stdin.handle,
+                        process.stdout.handle,
+                        process.stderr.handle
+                    }
+                }
+            ).waitExit()
+            os.execute("chmod +x " .. From)
+        end
+        local Command = "#!/bin/bash\n" .. TypeWriter.This .. " execute --input=" .. AppData .. "CoreLauncher.twr"
+        CreateShortcut(
+            process.env.HOME .. "/Desktop/CoreLauncher",
+            Command,
+            FavIcon
+        )
+        CreateShortcut(
+            "/Applications/CoreLauncher",
+            Command,
+            FavIcon
+        )
     end
 }
 
 Finish[TypeWriter.Os == "win32"]()
+TypeWriter.Logger.Info("Installation complete!")
+Wait(60)
 
-require("coro-spawn")(
-    TypeWriter.This,
-    {
-        args = {
-            "execute", "--input=" .. AppData .. "CoreLauncher.twr"
-        },
-        detached = true
-    }
-)
+--require("coro-spawn")(
+--    TypeWriter.This,
+--    {
+--        args = {
+--            "execute", "--input=" .. AppData .. "CoreLauncher.twr"
+--        },
+--        detached = true
+--    }
+--)
