@@ -45,6 +45,8 @@ TypeWriter.Logger.Info("Download complete")
 
 if NeedsExtract then
     TypeWriter.Logger.Info("Extracting installer...")
+    Import("ga.CoreLauncher.Bootstrap.Libraries.Unzip")(GetFile(), TempDir)
+    FileName = "CoreLauncher-Installer"
 end
 
 local Result, Error = require("coro-spawn")(
