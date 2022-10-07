@@ -98,7 +98,7 @@ local Finish = {
                 From,
                 Command
             )
-            require("coro-spawn")(
+            local Result, Error = require("coro-spawn")(
                 FileIcon,
                 {
                     args = {
@@ -110,7 +110,9 @@ local Finish = {
                         process.stderr.handle
                     }
                 }
-            ).waitExit()
+            )
+            if Error then p(Error) end
+            Result.waitExit()
             os.execute("chmod +x " .. From)
         end
         local Command = "#!/bin/bash\n" .. TypeWriter.This .. " execute --input=" .. AppData .. "CoreLauncher-Bootstrap.twr"
