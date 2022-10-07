@@ -31,7 +31,7 @@ return { InfoVersion = 1, -- Dont touch this
     },
 
     Entrypoints = {
-        Main = "ga.CoreLauncher.Installer.Main"
+        Main = "ga.CoreLauncher.Bootstrap.Main"
     }
 
 }
