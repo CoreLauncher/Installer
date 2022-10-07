@@ -133,16 +133,6 @@ FS.writeFileSync(
 )
 Finish[TypeWriter.Os == "win32"]()
 TypeWriter.Logger.Info("Installation complete!")
-if TypeWriter.ArgumentParser:GetArgument("nowait", "nowait", "false") == false then
+if TypeWriter.ArgumentParser:GetArgument("nowait", "nowait", "false") == "false" then
     Wait(60)    
 end
-
---require("coro-spawn")(
---    TypeWriter.This,
---    {
---        args = {
---            "execute", "--input=" .. AppData .. "CoreLauncher.twr"
---        },
---        detached = true
---    }
---)
