@@ -76,7 +76,7 @@ local Finish = {
                 To = TypeWriter.This,
                 Icon = AppData .. "/favicon.ico",
                 CWD = AppData,
-                Arguments = "execute --input=" .. AppData .. "CoreLauncher.twr"
+                Arguments = "execute --input=" .. AppData .. "CoreLauncher-Bootstrap.twr"
             }
         )
         FS.writeFileSync(
@@ -113,7 +113,7 @@ local Finish = {
             ).waitExit()
             os.execute("chmod +x " .. From)
         end
-        local Command = "#!/bin/bash\n" .. TypeWriter.This .. " execute --input=" .. AppData .. "CoreLauncher.twr"
+        local Command = "#!/bin/bash\n" .. TypeWriter.This .. " execute --input=" .. AppData .. "CoreLauncher-Bootstrap.twr"
         CreateShortcut(
             process.env.HOME .. "/Desktop/CoreLauncher",
             Command,
@@ -127,9 +127,15 @@ local Finish = {
     end
 }
 
+FS.writeFileSync(
+    AppData .. "/Version.txt",
+    Version.tag_name
+)
 Finish[TypeWriter.Os == "win32"]()
 TypeWriter.Logger.Info("Installation complete!")
-Wait(60)
+if TypeWriter.ArgumentParser:GetArgument("nowait", "nowait", "false") == false then
+    Wait(60)    
+end
 
 --require("coro-spawn")(
 --    TypeWriter.This,
